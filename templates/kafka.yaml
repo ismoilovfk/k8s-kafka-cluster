@@ -1,0 +1,82 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  labels:
+    app: {{ .Values.kafka.name }}
+  name: {{ .Values.kafka.name }}
+  namespace: {{ .Values.kafka.namespace }}
+spec:
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
+  kafka:
+    template:
+      pod:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchExpressions:
+                      - key: strimzi.io/name
+                        operator: In
+                        values:
+                          - {{ .Values.kafka.name }}-kafka
+                  topologyKey: kubernetes.io/hostname
+    config:
+      {{- range .Values.kafka.config }}
+      {{ .name }}: {{ .value | quote }}
+      {{- end }}
+    listeners:
+      {{- range .Values.kafka.listeners }}
+      - authentication:
+          type: {{ $.Values.kafka.authenticationType }}
+        name: {{ .name }}
+        port: {{ .port }}
+        tls: {{ .tls }}
+        type: {{ .type }}
+      {{- end }}
+    metricsConfig:
+      type: jmxPrometheusExporter
+      valueFrom:
+        configMapKeyRef:
+          key: kafka-metrics-config.yml
+          name: kafka-metrics
+    replicas: {{ .Values.kafka.replicas }}
+    resources:
+      limits:
+        cpu: {{ .Values.kafka.resources.limits.cpu }}
+        memory: {{ .Values.kafka.resources.limits.memory }}
+      requests:
+        cpu: {{ .Values.kafka.resources.requests.cpu }}
+        memory: {{ .Values.kafka.resources.requests.memory }}
+    storage:
+      size: {{ .Values.kafka.storageSize }}
+      type: {{ .Values.kafka.storageType }}
+  zookeeper:
+    template:
+      pod:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchExpressions:
+                      - key: strimzi.io/name
+                        operator: In
+                        values:
+                          - {{ .Values.kafka.name }}-zookeeper
+                  topologyKey: kubernetes.io/hostname
+    replicas: {{ .Values.zookeeper.replicas }}
+    resources:
+      limits:
+        cpu: {{ .Values.zookeeper.resources.limits.cpu }}
+        memory: {{ .Values.zookeeper.resources.limits.memory }}
+      requests:
+        cpu: {{ .Values.zookeeper.resources.requests.cpu }}
+        memory: {{ .Values.zookeeper.resources.requests.memory }}
+    storage:
+      size: {{ .Values.zookeeper.storageSize }}
+      type: {{ .Values.zookeeper.storageType }}

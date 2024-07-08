@@ -1,0 +1,4 @@
+apiVersion: v2
+name: k8s-kafka-cluster
+description: A Helm chart for deploying Kafka and Zookeeper
+version: 1.0.0

@@ -1,0 +1,53 @@
+kafka:
+  name: kafka
+  username: kafkas
+  namespace: kafka-dev
+  replicas: 3
+  storageSize: 10Gi
+  storageType: persistent-claim
+  resources:
+    limits:
+      cpu: 400m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  config:
+    - name: offsets.topic.replication.factor
+      value: 3
+    - name: transaction.state.log.replication.factor
+      value: 3
+    - name: transaction.state.log.min.isr
+      value: 2
+    - name: default.replication.factor
+      value: 3
+    - name: min.insync.replicas
+      value: 2
+    - name: inter.broker.protocol.version
+      value: '3.6'
+  listeners:
+    - name: plain
+      port: 9092
+      tls: false
+      type: internal
+    - name: tls
+      port: 9093
+      tls: true
+      type: internal
+    - name: listener1
+      port: 9094
+      tls: true
+      type: route
+  authenticationType: scram-sha-512
+
+zookeeper:
+  replicas: 3
+  storageSize: 5Gi
+  storageType: persistent-claim
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
