@@ -1,7 +1,7 @@
 kafka:
-  name: kafka
-  username: kafkas
-  namespace: kafka-dev
+  name: kafka.clustername
+  username: kafka.username
+  namespace: kafka.namespace
   replicas: 3
   storageSize: 10Gi
   storageType: persistent-claim
