@@ -10,11 +10,16 @@ The goal of this chart is to provide a quick and simple way to deploy a Kafka cl
 - Ideal for Development: Perfect for local development and testing environments.
 
 ## Steps to Deploy
+
 ```sh
 kubectl create secret generic Values.kafka.clustername-creds \
   --from-literal=Values.kafka.username='somepassword' \
   --namespace=Values.kafka.namespace
+
 git clone https://github.com/ismoilovfk/k8s-kafka-cluster.git
+
 cd k8s-kafka-cluster
+
 helm install my-kafka-cluster .
+
 ```
