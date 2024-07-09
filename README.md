@@ -12,10 +12,15 @@ The goal of this chart is to provide a quick and simple way to deploy a Kafka cl
 ## Steps to Deploy
 
 ```sh
+1. Install [operator](https://github.com/strimzi/strimzi-kafka-operator/blob/main/helm-charts/helm3/strimzi-kafka-operator/README.md)
+helm install my-strimzi-cluster-operator oci://quay.io/strimzi-helm/strimzi-kafka-operator
+
+2. Create secret for kafka-user
 kubectl create secret generic Values.kafka.clustername-creds \
   --from-literal=Values.kafka.username='somepassword' \
   --namespace=Values.kafka.namespace
 
+3.Clone repo and install kafka cluster
 git clone https://github.com/ismoilovfk/k8s-kafka-cluster.git
 
 cd k8s-kafka-cluster
